@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+</head>
+<body>
+    <form action="{{ url_for('predict') }}" method="post">
+        <input type="text" name="text" placeholder="Enter the comment">
+        <input type="submit" value="Predict">
+    </form>
+
+    {% if predicted_class %}
+        <h1>{{ predicted_class }}</h1>
+    {% endif %}
+
+</body>
+</html>
