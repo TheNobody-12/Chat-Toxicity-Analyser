@@ -8,12 +8,10 @@ from tensorflow.keras.layers import TextVectorization
 import json
 import nltk
 from Support import TextPreprocessing
-# nltk.download('stopwords')
-# nltk.download('punkt')
-# nltk.download('wordnet')
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('wordnet')
 
-# create flask app
-app = Flask(__name__)
 
 class_labels = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
 
@@ -50,6 +48,8 @@ def Get_prediction(text):
     predicted_classes = [class_labels[i] for i, pred in enumerate(binary_predictions[0]) if pred == 1]
     return predicted_classes
 
+# create flask app
+app = Flask(__name__)
 
 @app.route('/')
 def home():
