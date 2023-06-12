@@ -1,4 +1,4 @@
-FROM python:3.7
+FROM python:3.8
 # copy the dependencies file to the working directory
 COPY . /app
 WORKDIR /app
