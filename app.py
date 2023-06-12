@@ -55,6 +55,24 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
+@app.route('/predict_api', methods=['POST'])
+def predict_api():
+    """
+    Endpoint for rendering results in JSON format
+    """
+    text = request.form['text']  # Get the 'text' field from the form data
+
+    # Perform prediction on the text
+    prediction = Get_prediction(text)
+
+    if len(prediction) == 0:
+        prediction = 'Not Toxic'
+    else:
+        prediction = ', '.join(prediction)
+
+    response = {'prediction': prediction}  # Create a response dictionary
+    return jsonify(response)  # Return the response as JSON
+    
 
 @app.route('/predict', methods=['POST'])
 def predict():

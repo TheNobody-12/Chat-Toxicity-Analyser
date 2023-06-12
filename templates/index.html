@@ -5,14 +5,19 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="{{ url_for('predict') }}" method="post">
+    <!--
+        Use this when you want to print the output into the webpage itself.
+        <form action="{{ url_for('predict') }}" method="post"> 
+            -->
+
+    <form action="{{ url_for('predict_api') }}" method="post">
         <input type="text" name="text" placeholder="Enter the comment">
         <input type="submit" value="Predict">
-    </form>
+    </form>    
 
     {% if predicted_class %}
         <h1>{{ predicted_class }}</h1>
-    {% endif %}
+    {% endif %} 
 
 </body>
 </html>
