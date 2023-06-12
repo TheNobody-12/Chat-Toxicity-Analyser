@@ -1,0 +1,2 @@
+# virtualenv is ignored by default in .gitignore
+prune server
