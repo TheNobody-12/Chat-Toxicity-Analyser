@@ -1,10 +1,8 @@
 import pandas as pd
 import numpy as np
 from flask import Flask,jsonify, request, render_template
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras.models import load_model
-from tensorflow.keras.layers import TextVectorization
+from keras.models import load_model
+from keras.layers import TextVectorization
 import json
 import nltk
 from Support import TextPreprocessing
