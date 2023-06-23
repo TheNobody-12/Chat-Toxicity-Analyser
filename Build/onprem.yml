@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: chatmod
+  name: chatmod
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chatmod
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: chatmod
+    spec:
+      containers:
+      - image: techdomeacr.azurecr.io/chatmod:_BUILD__ID_
+        name: chatmod
+        imagePullPolicy: Always
+        resources: {}
+        ports:
+          - containerPort: 80
+      #   env:
+      #     - name: NODE_ENV
+      #       valueFrom:
+      #         secretKeyRef:
+      #           name: dev-secret
+      #           key: NODE_ENV
+      imagePullSecrets:
+        - name: acr-secret
+      
+status: {}
