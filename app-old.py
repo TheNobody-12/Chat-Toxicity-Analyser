@@ -1,15 +1,14 @@
+import pandas as pd
 import numpy as np
 from flask import Flask,jsonify, request, render_template
-import tensorflow as tf
-from tensorflow import keras
-from tensorflow.keras.models import load_model
-from tensorflow.keras.layers import TextVectorization
+from keras.models import load_model
+from keras.layers import TextVectorization
 import json
 import nltk
 from Support import TextPreprocessing
-from flask_cors import CORS
-from waitress import serve
-
+nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('wordnet')
 
 
 class_labels = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
@@ -49,7 +48,6 @@ def Get_prediction(text):
 
 # create flask app
 app = Flask(__name__)
-CORS(app)
 
 @app.route('/')
 def home():
@@ -73,5 +71,26 @@ def predict_api():
     response = {'prediction': prediction}  # Create a response dictionary
     return jsonify(response)  # Return the response as JSON
     
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    """
+    For rendering results on HTML GUI
+
+    request.json is a dictionary object with 
+    key as 'text' and value as the text entered 
+    by the user in the text box
+
+
+    """
+    text = request.form['text'] 
+    prediction = Get_prediction(text)
+    if len(prediction) == 0:
+        prediction = 'Not Toxic'
+    else:
+        prediction =' ,'.join(prediction)
+    return render_template('index.html', prediction_text='The comment is {}.'.format(prediction))
+
+
 if __name__ == '__main__':
-    serve(app, host="0.0.0.0", port=80)
+    app.run(debug=True)
