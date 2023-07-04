@@ -9,6 +9,7 @@ import nltk
 from Support import TextPreprocessing
 from flask_cors import CORS
 from waitress import serve
+import pandas as pd
 
 
 
@@ -55,6 +56,20 @@ CORS(app)
 def home():
     return render_template('index.html')
 
+# Testing
+data = pd.read_csv('test.csv')
+
+@app.route('/test_predict',methods=['POST'])
+def test_predict():
+    json_data = request.get_json(force=True)
+    text = json_data['text']
+    prediction = Get_prediction(text)
+    if len(prediction) == 0:
+        prediction = 'Not Toxic'
+    else:
+        prediction = ', '.join(prediction)
+    return jsonify(prediction)
+
 @app.route('/predict_api', methods=['POST'])
 def predict_api():
     """
@@ -72,6 +87,9 @@ def predict_api():
 
     response = {'prediction': prediction}  # Create a response dictionary
     return jsonify(response)  # Return the response as JSON
+
+
+
     
 if __name__ == '__main__':
     serve(app, host="0.0.0.0", port=80)
