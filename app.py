@@ -1,5 +1,6 @@
 import numpy as np
 from flask import Flask,jsonify, request, render_template
+import asyncio
 import tensorflow as tf
 from tensorflow import keras
 from tensorflow.keras.models import load_model
@@ -56,19 +57,43 @@ CORS(app)
 def home():
     return render_template('index.html')
 
-# Testing
-data = pd.read_csv('test.csv')
+@app.route('/predict_api_json', methods=['POST'])
+async def predict_api_json():
+    """
+    Endpoint for rendering results in JSON format
 
-@app.route('/test_predict',methods=['POST'])
-def test_predict():
-    json_data = request.get_json(force=True)
-    text = json_data['text']
-    prediction = Get_prediction(text)
-    if len(prediction) == 0:
-        prediction = 'Not Toxic'
-    else:
-        prediction = ', '.join(prediction)
-    return jsonify(prediction)
+    [5:04 PM] Moeen Mahmud
+
+// request body
+
+{
+
+  "text": "Text will go here"
+
+}
+
+// respose
+
+{
+
+  "status": 200,
+
+  "predictions": ["preds"],
+
+  "text": "asdlfasdfkl"
+
+}
+
+    """
+    data = request.get_json()  # Get the JSON data from the request
+
+    predictions = []
+
+
+
+    text = data['text']  # Get the 'text' field from each item in the JSON data
+
+
 
 @app.route('/predict_api', methods=['POST'])
 def predict_api():
@@ -85,11 +110,18 @@ def predict_api():
     else:
         prediction = ', '.join(prediction)
 
-    response = {'prediction': prediction}  # Create a response dictionary
-    return jsonify(response)  # Return the response as JSON
+    response = {'prediction': prediction}  # Create a response dictionary\
+    try:
+        return jsonify(response)  # Return the response as JSON
+    except:
+        return jsonify({'trace': 'An error occurred during prediction'})
+    
+
 
 
 
     
 if __name__ == '__main__':
-    serve(app, host="0.0.0.0", port=80)
+    # serve(app, host="0.0.0.0", port=80)
+
+    app.run(debug=True,port=5000)

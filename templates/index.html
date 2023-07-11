@@ -5,10 +5,6 @@
     <title>Document</title>
 </head>
 <body>
-    <!--
-        Use this when you want to print the output into the webpage itself.
-        <form action="{{ url_for('predict') }}" method="post"> 
-            -->
 
     <form action="{{ url_for('predict_api') }}" method="post">
         <input type="text" name="text" placeholder="Enter the comment">
