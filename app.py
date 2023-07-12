@@ -40,9 +40,7 @@ preprocessor = TextPreprocessing()
 def Get_prediction(text):
     user_input = preprocessor.preprocess_text(text)
     user_input=' '.join(user_input)
-    # print(user_input)
     vectorized_text = vectorizer(user_input)
-    # print(vectorized_text)
     prediction = TextClassifier.predict(np.expand_dims(vectorized_text,0))
     # Convert the prediction probabilities to binary form
     binary_predictions = np.where(prediction > 0.5, 1, 0)
@@ -62,38 +60,28 @@ async def predict_api_json():
     """
     Endpoint for rendering results in JSON format
 
-    [5:04 PM] Moeen Mahmud
-
-// request body
-
-{
-
-  "text": "Text will go here"
-
-}
-
-// respose
-
-{
-
-  "status": 200,
-
-  "predictions": ["preds"],
-
-  "text": "asdlfasdfkl"
-
-}
-
     """
     data = request.get_json()  # Get the JSON data from the request
 
-    predictions = []
-
-
+    status = 102
 
     text = data['text']  # Get the 'text' field from each item in the JSON data
 
+    # If any error occurs during prediction, append an error message to the predictions list
+    try:
+        # Perform prediction on the text asynchronously
+        prediction = await asyncio.to_thread(Get_prediction,text)
+        status = 200
+        if len(prediction) == 0:
+            prediction = 'Not Toxic'
+        else:
+            prediction = ', '.join(prediction)
 
+    except:
+        prediction = None
+        status = 500
+
+    return jsonify({"status":status,"prediction":prediction,"text":text}) , status # Return the predictions as JSON
 
 @app.route('/predict_api', methods=['POST'])
 def predict_api():
@@ -114,11 +102,8 @@ def predict_api():
     try:
         return jsonify(response)  # Return the response as JSON
     except:
-        return jsonify({'trace': 'An error occurred during prediction'})
+        return jsonify({'trace': 'An error occurred during prediction'}) , 500  # Return the error as JSON
     
-
-
-
 
     
 if __name__ == '__main__':
